@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { uploadByLink} = require('../controllers/uploadController');
+const { uploadFromDevice, uploadByLink } = require('../controllers/uploadController');
 
-// router.post('/', uploadByLink)
-router.post('/by-link',uploadByLink)
+router.post('/by-link', uploadByLink)
+router.post('/', uploadFromDevice)
 
 module.exports = router;

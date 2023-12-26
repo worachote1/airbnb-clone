@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Perks from '../components/Perks'
 import axios from 'axios'
+import Swal from 'sweetalert2';
 
 export default function PlacesPage() {
     const { action } = useParams()
@@ -16,15 +17,51 @@ export default function PlacesPage() {
     const [checkOut, setCheckOut] = useState("")
     const [maxGuests, setMaxGuest] = useState(1)
 
-    const addPhotoByLink = async(e) =>{
+    const alertUploadFail = (errData) => {
+        Swal.fire({
+            title: errData,
+            text: "Please try again",
+            icon: "error"
+        });
+    }
+
+    const addPhotoByLink = async (e) => {
         e.preventDefault()
-        const {data} = await axios.post(`${process.env.REACT_APP_API}/upload/by-link`,{
-            link: photoLink
-        })
-        setAddedPhotos(prev => {
-            return [...prev, data]
-        })
-        setPhotoLink("")
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_API}/upload/by-link`, {
+                link: photoLink
+            })
+            setAddedPhotos(prev => {
+                return [...prev, data]
+            })
+            setPhotoLink("")
+        } catch (err) {
+            console.log(err)
+            alertUploadFail(err.response.data.message)
+        }
+    }
+
+    const uploadPhoto = async(e) => {
+        e.preventDefault()
+        try{
+            const files = [...e.target.files]
+            const data = new FormData()
+            console.log(data)
+            for(let i=0; i<files.length; i++){
+                data.append('photos',files[i])
+            }
+            console.log(data)
+            const resUpload = await axios.post(`${process.env.REACT_APP_API}/upload`,data,{
+                headers : {"Content-type" : "multipart/form-data"}
+            })
+            console.log(resUpload.data)
+            setAddedPhotos(prev => {
+                return [...prev, resUpload.data]
+            })
+        }catch(err){
+            console.log(err)
+            alertUploadFail(err.response.data.message)
+        }
     }
 
     return (
@@ -46,7 +83,7 @@ export default function PlacesPage() {
                 )}
             {action === "new" && (
                 <div>
-                    <form>
+                    <form encType='multipart/form-data'>
                         <h2 className='text-2xl mt-4'>Title</h2>
                         <p className='text-gray-500 text-sm'>title for your place.</p>
                         <input type='text'
@@ -70,20 +107,20 @@ export default function PlacesPage() {
                                 onClick={addPhotoByLink}
                             >Add&nbsp;photo</button>
                         </div>
+
                         <div className='mt-2 gap-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
                             {addedPhotos.length > 0 && addedPhotos.map(item => (
                                 <div>
-                                    <img src={`http://localhost:5000/uploads/${item}`} className='rounded-2xl'/>
+                                    <img src={`http://localhost:5000/uploads/${item}`} className='rounded-2xl' />
                                 </div>
                             ))}
-                            <button className='flex gap-1 items-center justify-center border bg-transparent rounded-2xl p-2 text-2xl text-gray-600'
-
-                            >
+                            <label className='cursor-pointer flex gap-1 items-center justify-center border bg-transparent rounded-2xl p-2 text-2xl text-gray-600'>
+                                <input type='file' multiple className='hidden' onChange={uploadPhoto} />
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                                 </svg>
                                 Upload
-                            </button>
+                            </label>
                         </div>
                         <h2 className='text-2xl mt-4'>Description</h2>
                         <p className='text-gray-500 text-sm'>description of the place</p>

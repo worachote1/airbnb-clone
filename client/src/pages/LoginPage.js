@@ -12,7 +12,7 @@ export default function LoginPage() {
     const alertLoginSuccess = () => {
         Swal.fire({
             title: "Login Successful",
-            text: "xxx",
+            text: "",
             icon: "success"
         });
     }
