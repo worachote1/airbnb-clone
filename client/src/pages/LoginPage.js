@@ -1,36 +1,42 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { userContext } from '../UserContext';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
+    const navigate = useNavigate();
+    const { setUser } = useContext(userContext)
     const alertLoginSuccess = () => {
         Swal.fire({
-          title: "Login Successful",
-          text: "xxx",
-          icon: "success"
+            title: "Login Successful",
+            text: "xxx",
+            icon: "success"
         });
-      }
+    }
 
-    const alertLoginFail = () => {
+    const alertLoginFail = (errData) => {
         Swal.fire({
-          title: "Login failed",
-          text: "Please try again later",
-          icon: "error"
+            title: "Login failed",
+            text: errData,
+            icon: "error"
         });
-      }
-    
+    }
+
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        try{
-            await axios.post(`${process.env.REACT_APP_API}/auth/login`,{email,password}) 
+        try {
+            const logInUser = await axios.post(`${process.env.REACT_APP_API}/auth/login`, { email, password }, {
+                withCredentials: true
+            })
+            setUser(logInUser.data)
             alertLoginSuccess()
-        }catch(err)
-        {
-            alertLoginFail()
+            navigate('/')
+        } catch (err) {
+            console.log(err)
+            alertLoginFail(err.response.data.message)
         }
     }
 

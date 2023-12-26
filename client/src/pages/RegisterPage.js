@@ -16,10 +16,10 @@ export default function RegisterPage() {
     });
   }
 
-  const alertRegisterFail = () => {
+  const alertRegisterFail = (errData) => {
     Swal.fire({
       title: "Registration failed",
-      text: "Please try again later",
+      text: errData,
       icon: "error"
     });
   }
@@ -33,7 +33,7 @@ export default function RegisterPage() {
       alertRegisterSuccess()
     }
     catch (err) {
-      alertRegisterFail()
+      alertRegisterFail(err.response.data.message)
     }
   }
 
