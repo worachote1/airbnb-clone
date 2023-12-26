@@ -13,7 +13,8 @@ app.use(cors({
 }));
 
 app.use("/api/auth",require('./routes/authRoutes.js'))
- 
+app.use("/api/upload",require('./routes/uploadRoutes.js'))
+
 //error handling middleware
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
