@@ -14,21 +14,28 @@ const fileStorageEngine = multer.diskStorage({
 });
 const upload = multer({ storage: fileStorageEngine });
 
-const uploadFromDevice = async(req,res,err,next) => {
-    upload.array('photos',max_images)(req, res, (err) => {
+const uploadFromDevice = (req, res, next) => {
+    try {
+      upload.array('photos', max_images)(req, res, (err) => {
         if (err) {
-            return next(createError(400,"Multiple File upload failed44."));
+          console.log(err);
+          return next(createError(400, "Multiple File upload failed."));
         }
-        res.status(200).json(req.files)
-    });
-}
+        console.log(req.files); // This should now log the uploaded files
+        res.status(200).json(req.files);
+      });
+    } catch (err) {
+      console.log(err);
+      next(createError(400, "Multiple File upload failed44."));
+    }
+  };
 
 const uploadByLink = async(req,res,next) => {
 
     const { link } = req.body
     try{
         await imageDownloader.image({
-            url: link,
+            url: link, 
             dest: `${__dirname}/../uploads/${newName}`
             // dest: `${__dirname}/../../client/public/uploads/${newName}`
 
