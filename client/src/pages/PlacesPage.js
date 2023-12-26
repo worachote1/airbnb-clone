@@ -16,11 +16,15 @@ export default function PlacesPage() {
     const [checkOut, setCheckOut] = useState("")
     const [maxGuests, setMaxGuest] = useState(1)
 
-    const addPhotoByLink = async (e) => {
+    const addPhotoByLink = async(e) =>{
         e.preventDefault()
-        await axios.post(`${process.env.REACT_APP_API}/upload/by-link`, {
+        const {data} = await axios.post(`${process.env.REACT_APP_API}/upload/by-link`,{
             link: photoLink
         })
+        setAddedPhotos(prev => {
+            return [...prev, data]
+        })
+        setPhotoLink("")
     }
 
     return (
@@ -66,8 +70,13 @@ export default function PlacesPage() {
                                 onClick={addPhotoByLink}
                             >Add&nbsp;photo</button>
                         </div>
-                        <div className='mt-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
-                            <button className='flex gap-1 items-center justify-center border bg-transparent rounded-2xl p-8 text-2xl text-gray-600'
+                        <div className='mt-2 gap-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
+                            {addedPhotos.length > 0 && addedPhotos.map(item => (
+                                <div>
+                                    <img src={`http://localhost:5000/uploads/${item}`} className='rounded-2xl'/>
+                                </div>
+                            ))}
+                            <button className='flex gap-1 items-center justify-center border bg-transparent rounded-2xl p-2 text-2xl text-gray-600'
 
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
