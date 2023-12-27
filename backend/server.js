@@ -16,6 +16,7 @@ app.use('/uploads', express.static(`${__dirname}/uploads`))
 
 app.use("/api/auth",require('./routes/authRoutes.js'))
 app.use("/api/upload",require('./routes/uploadRoutes.js'))
+app.use("/api/places",require('./routes/placeRoutes.js'))
 
 //error handling middleware
 app.use((err, req, res, next) => {
