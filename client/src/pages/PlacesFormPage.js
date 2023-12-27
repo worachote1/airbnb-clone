@@ -1,11 +1,12 @@
 import axios from 'axios'
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import PhotoUploader from '../components/PhotoUploader'
 import Perks from '../components/Perks'
 import AccountNav from '../components/AccountNav'
 
 export default function PlacesFormPage() {
+    const { id } = useParams()
     const navigate = useNavigate()
     const [title, setTitle] = useState("")
     const [address, setAddress] = useState("")
@@ -15,38 +16,88 @@ export default function PlacesFormPage() {
     const [extraInfo, setExtraInfo] = useState("")
     const [checkIn, setCheckIn] = useState("")
     const [checkOut, setCheckOut] = useState("")
-    const [maxGuests, setMaxGuest] = useState(1)
+    const [maxGuests, setMaxGuests] = useState(1)
     const [redirect, setRedirect] = useState("")
 
-    const addNewPlace = async (e) => {
+    const savePlace = async (e) => {
         e.preventDefault()
+
         try {
-            const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests }
-            const { data } = await axios.post(`${process.env.REACT_APP_API}/places`, placeData, {
-                withCredentials: true
-            })
-            console.log(data)
-            // Reset state variables to their initial values or empty strings
-            setTitle('');
-            setAddress('');
-            setAddedPhotos([]);
-            setDescription('');
-            setPerks([]);
-            setExtraInfo('');
-            setCheckIn('');
-            setCheckOut('');
-            setMaxGuest(1);
-            navigate("/account/places")
+
+            if (id) {
+                //update place
+                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests }
+                const { data } = await axios.put(`${process.env.REACT_APP_API}/places/${id}`, placeData, {
+                    withCredentials: true
+                } )
+                console.log(data)
+                // Reset state variables to updated value
+                setTitle(data.title);
+                setAddress(data.address);
+                setAddedPhotos(data.photos);
+                setDescription(data.description);
+                setPerks(data.perks);
+                setExtraInfo(data.extraInfo);
+                setCheckIn(data.checkIn);
+                setCheckOut(data.checkOut);
+                setMaxGuests(data.maxGuests);
+                navigate("/account/places")
+            }
+            else {
+                // create place
+                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests }
+                const { data } = await axios.post(`${process.env.REACT_APP_API}/places`, placeData, {
+                    withCredentials: true
+                })
+                console.log(data)
+                // Reset state variables to their initial values or empty strings
+                setTitle('');
+                setAddress('');
+                setAddedPhotos([]);
+                setDescription('');
+                setPerks([]);
+                setExtraInfo('');
+                setCheckIn('');
+                setCheckOut('');
+                setMaxGuests(1);
+                navigate("/account/places")
+            }
         }
         catch (err) {
             console.log(err)
         }
     }
 
+    const getPlaceById = async (id) => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_API}/places/${id}`)
+            setTitle(data.title);
+            setAddress(data.address);
+            setAddedPhotos(data.photos);
+            setDescription(data.description);
+            setPerks(data.perks);
+            setExtraInfo(data.extraInfo);
+            setCheckIn(data.checkIn);
+            setCheckOut(data.checkOut);
+            setMaxGuests(data.maxGuests);
+            // setPrice(data.price);
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        if (!id) {
+            return;
+        }
+        getPlaceById(id)
+    }, [id])
+
     return (
         <div>
             <AccountNav />
-            <form onSubmit={addNewPlace}>
+            <form onSubmit={savePlace}>
                 <h2 className='text-2xl mt-4'>Title</h2>
                 <p className='text-gray-500 text-sm'>title for your place.</p>
                 <input type='text'
@@ -93,7 +144,7 @@ export default function PlacesFormPage() {
                     <div>
                         <h3 className='mt-2 -mb-2'>Max number of guests</h3>
                         <input type='number' value={maxGuests}
-                            onChange={(e) => setMaxGuest(e.target.value)} />
+                            onChange={(e) => setMaxGuests(e.target.value)} />
                     </div>
                 </div>
                 <button className='primary my-4'>Save</button>
