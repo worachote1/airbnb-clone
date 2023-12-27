@@ -22,7 +22,7 @@ app.use("/api/places",require('./routes/placeRoutes.js'))
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
     const errorMessage = err.message || "Error from error handler!";
-    return res.status(errorStatus).json({
+    return res.status(errorStatus).json({ 
       success: false,
       status: errorStatus,
       message: errorMessage,
