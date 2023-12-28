@@ -17,6 +17,7 @@ export default function PlacesFormPage() {
     const [checkIn, setCheckIn] = useState("")
     const [checkOut, setCheckOut] = useState("")
     const [maxGuests, setMaxGuests] = useState(1)
+    const [price, setPrice] = useState(100)
     const [redirect, setRedirect] = useState("")
 
     const savePlace = async (e) => {
@@ -26,7 +27,7 @@ export default function PlacesFormPage() {
 
             if (id) {
                 //update place
-                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests }
+                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests,price }
                 const { data } = await axios.put(`${process.env.REACT_APP_API}/places/${id}`, placeData, {
                     withCredentials: true
                 } )
@@ -41,11 +42,12 @@ export default function PlacesFormPage() {
                 setCheckIn(data.checkIn);
                 setCheckOut(data.checkOut);
                 setMaxGuests(data.maxGuests);
+                setPrice(data.price)
                 navigate("/account/places")
             }
             else {
                 // create place
-                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests }
+                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests, price }
                 const { data } = await axios.post(`${process.env.REACT_APP_API}/places`, placeData, {
                     withCredentials: true
                 })
@@ -60,6 +62,7 @@ export default function PlacesFormPage() {
                 setCheckIn('');
                 setCheckOut('');
                 setMaxGuests(1);
+                setPrice(100)
                 navigate("/account/places")
             }
         }
@@ -80,7 +83,7 @@ export default function PlacesFormPage() {
             setCheckIn(data.checkIn);
             setCheckOut(data.checkOut);
             setMaxGuests(data.maxGuests);
-            // setPrice(data.price);
+            setPrice(data.price);
         }
         catch (err) {
             console.log(err)
@@ -128,7 +131,7 @@ export default function PlacesFormPage() {
                 <textarea value={extraInfo} onChange={(e) => setExtraInfo(e.target.value)} />
                 <h2 className='text-2xl mt-4'>Check in&out times</h2>
                 <p className='text-gray-500 text-sm'>add check in and out times, remember to have some time window for cleaning the room between guest</p>
-                <div className='grid gap-2 sm:grid-cols-3'>
+                <div className='grid gap-2 sm:grid-cols-2 md:grid-cols-4'>
                     <div>
                         <h3 className='mt-2 -mb-2'>Check in time</h3>
                         <input type='text' value={checkIn}
@@ -145,6 +148,11 @@ export default function PlacesFormPage() {
                         <h3 className='mt-2 -mb-2'>Max number of guests</h3>
                         <input type='number' value={maxGuests}
                             onChange={(e) => setMaxGuests(e.target.value)} />
+                    </div>
+                    <div>
+                        <h3 className='mt-2 -mb-2'>Price per night</h3>
+                        <input type='number' value={price}
+                            onChange={(e) => setPrice(e.target.value)} />
                     </div>
                 </div>
                 <button className='primary my-4'>Save</button>

@@ -10,8 +10,8 @@ export default function PlacesPage() {
     const { action } = useParams()
     const [places, setPlaces] = useState([])
 
-    const getAllPlaces = async () => {
-        const { data } = await axios.get(`${process.env.REACT_APP_API}/places`, {
+    const getAllPlacesByUser = async () => {
+        const { data } = await axios.get(`${process.env.REACT_APP_API}/places/user`, {
             withCredentials: true
         })
         console.log(data)
@@ -19,7 +19,7 @@ export default function PlacesPage() {
     }
 
     useEffect(() => {
-        getAllPlaces()
+        getAllPlacesByUser()
     }, [])
 
     return (
@@ -42,9 +42,9 @@ export default function PlacesPage() {
                         </div>
                         <div className='mt-4'>
                             {places.length > 0 && places.map(item => (
-                                <Link  
-                                to = {`/account/places/${item._id}`}
-                                className='flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl'>
+                                <Link
+                                    to={`/account/places/${item._id}`}
+                                    className='flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl'>
                                     <div className='w-32 h-32 bg-blue-300 shrink-0'>
                                         {item.photos.length > 0 && (
                                             <img className='w-full h-full object-cover' src={`http://localhost:5000/uploads/${item.photos[0]}`} />
