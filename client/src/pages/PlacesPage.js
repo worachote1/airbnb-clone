@@ -47,7 +47,7 @@ export default function PlacesPage() {
                                 className='flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl'>
                                     <div className='w-32 h-32 bg-blue-300 shrink-0'>
                                         {item.photos.length > 0 && (
-                                            <img className='w-full h-full ' src={`http://localhost:5000/uploads/${item.photos[0]}`} />
+                                            <img className='w-full h-full object-cover' src={`http://localhost:5000/uploads/${item.photos[0]}`} />
                                         )}
                                     </div>
                                     <div className=''>
