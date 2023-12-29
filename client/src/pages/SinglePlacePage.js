@@ -43,10 +43,11 @@ export default function SinglePlacePage() {
                             Close photos
                         </button>
                     </div>
-                    <div className='w-4/12 mx-auto grid gap-2'>
+                    {/* w-4/12 mx-auto grid gap-2 */}
+                    <div className=' mx-auto grid gap-2'>
                         {place?.photos?.length > 0 && place.photos.map(item => (
-                            <div>
-                                <img className='aspect-square object-cover' src={`http://localhost:5000/uploads/${item}`} />
+                            <div className=''>
+                                <img className='aspect-square object-cover mx-auto' src={`http://localhost:5000/uploads/${item}`} />
                             </div>
                         ))}
                     </div>

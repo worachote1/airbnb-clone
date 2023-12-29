@@ -16,7 +16,7 @@ const getAllplaces = async (req, res, next) => {
 const createPlace = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
-        console.log("token nullasdc")
+        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
@@ -59,7 +59,7 @@ const getPlacesByCurUser = async (req, res, next) => {
 
     const { token } = req.cookies;
     if (!token) {
-        console.log("token nullasdc")
+        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {

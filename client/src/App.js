@@ -9,6 +9,7 @@ import ProfilePage from "./pages/ProfilePage";
 import PlacesPage from "./pages/PlacesPage";
 import PlacesFormPage from "./pages/PlacesFormPage";
 import SinglePlacePage from "./pages/SinglePlacePage";
+import BookingsPage from "./pages/BookingsPage";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
               <Route path="/account/places" element={<PlacesPage />} />
               <Route path="/account/places/new" element={<PlacesFormPage />} />
               <Route path="/account/places/:id" element={<PlacesFormPage />} />
+              <Route path="/account/bookings" element={<BookingsPage />} />
+              <Route path="/account/bookings/:id" element={<BookingsPage />} />
               <Route path="/places/:id" element={<SinglePlacePage />} />
             </Route>
           </Routes>
