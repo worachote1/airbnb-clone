@@ -28,9 +28,9 @@ export default function BookingsPage() {
                 {bookings?.length > 0 && bookings.map((item) => (
                     <Link 
                     to={`/account/bookings/${item._id}`}
-                    className='flex gap-4 bg-gray-200 rounded-2xl overflow-hidden'>
+                    className='flex gap-4 mt-2 bg-gray-200 rounded-2xl overflow-hidden'>
                         <div className='w-48'>
-                            <img className='aspect-square object-cover mx-auto' src={`http://localhost:5000/uploads/${item.place.photos[0]}`} />
+                            <img className='aspect-square object-cover  mx-auto' src={`http://localhost:5000/uploads/${item.place.photos[0]}`} />
                         </div>
                         <div className='py-3 pr-3 grow '>
                             <h2 className='text-xl'>{item.place.title}</h2>
