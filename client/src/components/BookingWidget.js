@@ -3,6 +3,7 @@ import { differenceInCalendarDays } from "date-fns";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../UserContext';
+import { formatNumberInput } from '../util/formatUtil';
 
 export default function BookingWidget({ place }) {
     const {user} = useContext(userContext)
@@ -40,7 +41,7 @@ export default function BookingWidget({ place }) {
     return (
         <div className='bg-white shadow p-4 rounded-2xl'>
             <div className='text-2xl text-center'>
-                Price: {place.price} / per night
+                Price: {formatNumberInput(place.price)} / per night
             </div>
             <div className='border rounded-2xl mt-4'>
                 <div className='flex'>
@@ -69,7 +70,7 @@ export default function BookingWidget({ place }) {
             <button onClick={bookThisPlace} className='primary mt-4'>
                 Book this place
                 {numberOfDate > 0 && (
-                    <span>{numberOfDate * place.price}</span>
+                    <span>  ${formatNumberInput(numberOfDate * place.price)}</span>
                 )}
             </button>
         </div>

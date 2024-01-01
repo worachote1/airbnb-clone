@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import PhotoUploader from '../components/PhotoUploader'
 import Perks from '../components/Perks'
 import AccountNav from '../components/AccountNav'
+import Swal from 'sweetalert2';
 
 export default function PlacesFormPage() {
     const { id } = useParams()
@@ -20,17 +21,33 @@ export default function PlacesFormPage() {
     const [price, setPrice] = useState(100)
     const [redirect, setRedirect] = useState("")
 
+
+    const alertPlaceSuccess = () => {
+        Swal.fire({
+            title: (id) ? "Update completed" : "Successfully created place",
+            text: "",
+            icon: "success"
+        });
+    }
+
+    const alertPlaceFail = (errData) => {
+        Swal.fire({
+            title: (id) ? "Failed to update" : "Creation not completed",
+            text: errData,
+            icon: "error"
+        });
+    }
+
     const savePlace = async (e) => {
         e.preventDefault()
 
         try {
-
             if (id) {
                 //update place
-                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests,price }
+                const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests, price }
                 const { data } = await axios.put(`${process.env.REACT_APP_API}/places/${id}`, placeData, {
                     withCredentials: true
-                } )
+                })
                 console.log(data)
                 // Reset state variables to updated value
                 setTitle(data.title);
@@ -43,8 +60,10 @@ export default function PlacesFormPage() {
                 setCheckOut(data.checkOut);
                 setMaxGuests(data.maxGuests);
                 setPrice(data.price)
+                alertPlaceSuccess()
                 navigate("/account/places")
             }
+
             else {
                 // create place
                 const placeData = { title, address, photos: [...addedPhotos], description, perks, extraInfo, checkIn, checkOut, maxGuests, price }
@@ -63,11 +82,14 @@ export default function PlacesFormPage() {
                 setCheckOut('');
                 setMaxGuests(1);
                 setPrice(100)
+                alertPlaceSuccess()
                 navigate("/account/places")
             }
         }
+
         catch (err) {
             console.log(err)
+            alertPlaceFail(err.response.data.message)
         }
     }
 

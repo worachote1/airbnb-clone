@@ -11,7 +11,7 @@ export default function LoginPage() {
     const { setUser } = useContext(userContext)
     const alertLoginSuccess = () => {
         Swal.fire({
-            title: "Login Successful",
+            title: "Successfully logged in",
             text: "",
             icon: "success"
         });

@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const createBooking = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
-        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
@@ -23,7 +22,6 @@ const createBooking = async (req, res, next) => {
 const getBookingByCurUser = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
-        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
@@ -42,12 +40,11 @@ const getBookingById = async (req, res, next) => {
     const { id } = req.params
     const { token } = req.cookies
     if (!token) {
-        console.log("token nullasdc")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET)
-        const booking = await Booking.findById(id)
+        const booking = await Booking.findById(id).populate('place')
         //only owner of that booking can find by this id
         if (data.id !== booking.user.toString()) {
             return next(createError(403, "You are not authorized to perform this action."))

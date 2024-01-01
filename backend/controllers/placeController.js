@@ -15,10 +15,31 @@ const getAllplaces = async (req, res, next) => {
 
 const createPlace = async (req, res, next) => {
     const { token } = req.cookies;
+    //check if token in cookies is present
     if (!token) {
-        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
+
+    // Check if required fields are correct
+    const { title, address, photos, description } = req.body;
+    let errInputMsg = ''
+    if (!title) {
+        errInputMsg = 'Title is required.';
+    }
+    else if (!address) {
+        errInputMsg = 'Address is required.';
+    }
+    else if(photos.length < 3){
+        errInputMsg = 'Photo must be uploaded at a minimum of 3.'
+    }
+    else if (!description) {
+        errInputMsg = 'Description is required.';
+    }     
+    if(errInputMsg){
+        return next(createError(400, errInputMsg));
+    }
+
+    //verify token and get user info
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET)
         const place = await Place.create({
@@ -34,11 +55,12 @@ const createPlace = async (req, res, next) => {
 const updatePlace = async (req, res, next) => {
     const { id } = req.params
     const { token } = req.cookies;
+    //check if token in cookies is present
     if (!token) {
-        console.log("token nullasdc")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
+        //verify token and get user info
         const data = jwt.verify(token, process.env.JWT_SECRET)
         const place = await Place.findById(id)
         //only owner of that property can update
@@ -58,11 +80,12 @@ const updatePlace = async (req, res, next) => {
 const getPlacesByCurUser = async (req, res, next) => {
 
     const { token } = req.cookies;
+    //check if token in cookies is present
     if (!token) {
-        console.log("token null")
         return next(createError(401, 'Unauthorized: No token provided'));
     }
     try {
+        //verify token and get user info
         const data = jwt.verify(token, process.env.JWT_SECRET)
         const allPlaces = await Place.find({ owner: data.id })
         res.status(200).json(allPlaces)
